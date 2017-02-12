@@ -1,3 +1,4 @@
+# to deal with dcm files batch move and rename
 
 from utils import process_dcm
 import os

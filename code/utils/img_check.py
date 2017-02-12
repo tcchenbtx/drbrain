@@ -1,10 +1,9 @@
 from matplotlib import pyplot as plt
 import nibabel as nib
-
-import numpy as np
 import h5py
 import random
 
+# visualize subject x 1D data
 def view_data(h5_file_not_tf, fig_num, checkname):
     with h5py.File(h5_file_not_tf, 'r') as hf:
         X = hf.get('X')
@@ -20,6 +19,8 @@ def view_data(h5_file_not_tf, fig_num, checkname):
             fig_indx += 1
     plt.savefig("%s.png" % checkname)
 
+
+# 3D image check: visualize middle image on z axis globally
 def check_all(nii_path_list, checkname):
     plot_num = len(nii_path_list)
     print ("Should see %d images in %s" % (plot_num, checkname))

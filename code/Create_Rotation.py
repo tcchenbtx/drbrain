@@ -6,7 +6,6 @@ import h5py
 from PIL import Image
 import nibabel as nib
 import scipy.ndimage as snd
-from matplotlib import pyplot as plt
 from random import shuffle
 
 # path
@@ -36,7 +35,7 @@ PD_nii_files = process_nii.get_nii(PD_afterflirt_path)
 
 unique_data_dict = {"AD": unique_AD_nii_files, "Normal": unique_Normal_nii_files, "PD": unique_PD_nii_files}
 
-############ functions for get randomized train valid test
+############ functions to get randomized train valid test
 def split_set(nii_dict):
     train = {}
     valid = {}
@@ -89,6 +88,7 @@ def label_convert_no_mci (y_array):
         ind += 1
     return output
 
+# function for outputing h5 file
 def output_h5(gopath, id, xinput, yinput, y_numinput):
     file_path = os.path.join(gopath, "%s.h5" % id)
     with h5py.File(file_path, 'w') as hf:
@@ -103,7 +103,7 @@ def nii_to_1d_tf_no_mci_rotate(nii_dict, h5_path, nameit):
     # parameter setting
     y_label = {"Normal": 1, "AD": 2, "PD":3}
     npad = ((3, 2), (3, 0), (3, 2))
-    rotate_degrees = [-15, -9, -6, -3, 3, 6, 9, 15]
+    rotate_degrees = [-15, -9, -6, -3, 3, 6, 9, 15]  # try fixed rotation degrees
     smooth = 1 # gausian smooth
 
     all_data_num = 0
@@ -212,20 +212,6 @@ def nii_to_1d_tf_no_mci_rotate(nii_dict, h5_path, nameit):
     print(final_output_y_onehot.shape)
     print(final_output_y_onehot[:5, :])
     print(final_output_y_number[:5])
-
-
-#     ### check image check point
-#     if tf:
-#         first_hundred = final_output_x[:100, :, :, :, :]
-#         fig_indx = 1
-#         for i in range(100):
-#             plt.subplot(4, 25, fig_indx, xticks=[], yticks=[])
-#             go_reshape = first_hundred[i, :, :, :, :].reshape(96, 112, 96)
-#             plt.imshow(go_reshape[:,:, 45], cmap='gray')
-#             fig_indx += 1
-#         plt.savefig("tf_format_check_no_mci.png")
-#     ##########
-
 
     return (final_output_x, final_output_y_onehot, output_file_path)
 

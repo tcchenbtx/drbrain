@@ -1,14 +1,13 @@
-from keras.utils.visualize_util import plot
+##### Try getting the attention map #####
+##### Still going                   #####
+
+
 from keras.models import load_model
 import os
 import numpy as np
 from keras import backend as K
 import cv2
 import h5py
-from keras.preprocessing.image import img_to_array
-from vis.utils import utils
-from vis.utils.vggnet import VGG16
-from vis.visualization import visualize_saliency
 import scipy.ndimage
 from matplotlib import pyplot as plt
 
@@ -98,14 +97,6 @@ print(prediction.shape)
 conv_outputs = conv_outputs[0,:,:,:,:]
 print(conv_outputs.shape)
 
-
-#layer_name = "final_conv_conv"
-#layer_idx = [idx for idx, layer in enumerate(model.layers) if layer.name == layer_name][0]
-#heatmap = visualize_saliency(model, layer_idx, [0], target_image)
-#print("OMG!!!")
-
-
-
 # create activation map
 cam = np.zeros(conv_outputs.shape[0:3], dtype='float32')
 print("conv_outputs shape")
@@ -117,11 +108,12 @@ print(class_weights.shape)
 print("class weights class 0 shape")
 print(class_weights[:,2].shape)
 
-
+# average pooling for each feature map
 avg_class_weights = np.mean(class_weights[:,2].reshape(2,3,2,64), axis=(0,1,2))
 print("avg_class_weights shape")
 print(avg_class_weights.shape)
 
+# expected output
 target_class = 2
 
 for i, w in enumerate(avg_class_weights):
@@ -139,11 +131,10 @@ print(np.max(cam))
 print("cam min")
 print(np.min(cam))
 
-
+# normalize the attention map
 cam = (cam - np.mean(cam))/np.std(cam)
 
-#cam /= np.max(cam)
-
+# check point!!
 print("cam shape")
 print(cam.shape)
 print(type(cam))
@@ -155,11 +146,12 @@ print("new cam std")
 print(np.std(cam))
 
 
-
+# zoom to the original size
 cam = scipy.ndimage.zoom(cam, (48, 37.3, 48))
 print("new cam")
 print(cam.shape)
 
+# target image with right size(3D)
 target_img_pure = target_image.reshape(96,112,96)
 
 # cam = cv2.resize(cam, (96, 112, 96))
@@ -167,10 +159,10 @@ heatmap = cv2.applyColorMap(np.uint8(255*cam), cv2.COLORMAP_JET)
 heatmap[np.where(cam < 0.2)] = 0
 img = heatmap*0.5 + target_img_pure
 
+# only check the middle image on z axis
 middle_img = img[:,:,48] * 200
 plt.imshow(middle_img)
 plt.savefig("my_attention.png")
-#cv2.imwrite("my_attention.png", middle_img)
 
 
 

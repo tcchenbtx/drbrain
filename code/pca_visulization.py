@@ -1,11 +1,11 @@
+# extra: code for PCA visualization and LDA visualization
+
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 import h5py
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
-#iris = datasets.load_iris()
 
 
 # path
@@ -32,37 +32,18 @@ with h5py.File(unique_matrix_path, 'r') as hf:
     print(X.shape)
     print(Y.shape)
     print(len(Y_num))
-    #
-    # train_subset_X = X[:752, :]
-    # train_subset_Y = Y_num[:752]
-    # valid_subset_X = X[752:,:]
-    # valid_subset_Y = Y_num[752:]
 
-
-# 1-normal: [1,0,0,0]
-#     2-MCI:[0,1,0,0]
-#     3-AD:[0,0,1,0]
-#     4-PD:[0,0,0,1]
-
-
-
-
-# X = iris.data
-# y = iris.target
     target_names = ['Normal', 'MCI', 'AD', 'PD']
 
-
-
-
-    # pca = PCA(n_components=2)
-    # X_r = pca.fit(X).transform(X)
+    pca = PCA(n_components=2)
+    X_r = pca.fit(X).transform(X)
 
     lda = LinearDiscriminantAnalysis(n_components=2)
     X_r2 = lda.fit(X, Y_num).transform(X)
 
-# Percentage of variance explained for each components
-#     print('explained variance ratio (first two components): %s'
-#           % str(pca.explained_variance_ratio_))
+    # Percentage of variance explained for each components
+    print('explained variance ratio (first two components): %s'
+          % str(pca.explained_variance_ratio_))
 
     plt.figure()
     colors = ['navy', 'turquoise', 'darkorange', 'magenta']
@@ -70,15 +51,15 @@ with h5py.File(unique_matrix_path, 'r') as hf:
 
     Y_num = np.array(Y_num)
 
-    # for color, i, target_name in zip(colors, [1, 2, 3, 4], target_names):
-    #     plt.scatter(X_r[Y_num == i, 0], X_r[Y_num == i, 1], color=color, alpha=.8, lw=lw,
-    #                 label=target_name, s=10)
-    # plt.legend(loc='best', shadow=False, scatterpoints=1)
-    # plt.title('Component Space')
-    # plt.xlabel('PC1')
-    # plt.ylabel('PC2')
-    #
-    # plt.savefig("dimension_reduction_PCA.png")
+    for color, i, target_name in zip(colors, [1, 2, 3, 4], target_names):
+        plt.scatter(X_r[Y_num == i, 0], X_r[Y_num == i, 1], color=color, alpha=.8, lw=lw,
+                    label=target_name, s=10)
+    plt.legend(loc='best', shadow=False, scatterpoints=1)
+    plt.title('Component Space')
+    plt.xlabel('PC1')
+    plt.ylabel('PC2')
+
+    plt.savefig("dimension_reduction_PCA.png")
 
     plt.figure()
     for color, i, target_name in zip(colors, [1, 2, 3, 4], target_names):
@@ -87,4 +68,4 @@ with h5py.File(unique_matrix_path, 'r') as hf:
     plt.legend(loc='best', shadow=False, scatterpoints=1)
     plt.title('LDA')
 
-    plt.savefig("dimention_reduction_LDA.png")
+    plt.savefig("dimension_reduction_LDA.png")

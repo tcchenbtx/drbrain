@@ -3,8 +3,6 @@ import re
 import random
 import nibabel as nib
 from matplotlib import pyplot as plt
-import subprocess
-
 
 # path
 base_path = os.path.abspath(os.path.dirname(__file__))
@@ -20,6 +18,8 @@ Normal_raw_data_path = os.path.join(raw_data_path, "Normal")
 
 make_file_path = os.path.join(code_path, "Makefile")
 
+
+# get nii files
 def get_nii(gopath):
     file_pattern = re.compile(r'.*\.nii$|.*\.nii\.gz$')
     nii_file_list = []
@@ -29,6 +29,7 @@ def get_nii(gopath):
                 nii_file_list.append(os.path.join(root, file))
     return nii_file_list
 
+# visualize random images with given size
 def random_visualization(fig_num, file_dict, filename):
     group_num = len(file_dict)
     f, ax = plt.subplots(group_num, fig_num, sharex=True, sharey=True)
@@ -55,6 +56,7 @@ def random_visualization(fig_num, file_dict, filename):
     plt.savefig("%s.png" % filename)
     return
 
+# fix the orientation of the nii files
 def fix_orientation(id, gopath, outpath, makefile, logpath="./"):
    nii_list = get_nii(gopath)
    file_name_pattern = re.compile(r'([a-zA-Z0-9_]*)\.nii')
@@ -66,22 +68,21 @@ def fix_orientation(id, gopath, outpath, makefile, logpath="./"):
    print ("use \"make %s_fix_orient >> %s\" to fix orientation" % (id, os.path.join(logpath, "%s_fix_orient.log" % id)))
    return
 
+# crop non-brain regions
 def crop_fig(id, gopath, outpath, makefile, logpath="./"):
     nii_list = get_nii(gopath)
     file_name_pattern = re.compile(r'([a-zA-Z0-9_]*)\.nii')
-    # subprocess.call("cp -r %s/* %s" % (gopath, outpath), shell=True)
+    # construct make command
     with open(makefile, "a") as mk:
         mk.write("%s_crop_fig:\n" % id)
-        #mk.write("\tcp %s/* %s\n" % (gopath, outpath))
-        #new_nii_list = get_nii(outpath)
         for i in nii_list:
             fname = re.findall(file_name_pattern, i)
-            #mk.write("\trobustfov %s\n" % i)
             mk.write("\tfsl5.0-robustfov -i %s -r %s\n" % (i, os.path.join(outpath, "%s.nii" % fname[0])))
     print ("use \"make %s_crop_fig >> %s\" to crop figures" % (id, os.path.join(logpath, "%s_crop_fig.log" % id)))
     return
 
 
+# skull strip
 def skull_strip(id, gopath, outpath, makefile, logpath="./"):
     nii_list = get_nii(gopath)
     file_name_pattern = re.compile(r'([a-zA-Z0-9_]*)\.nii')
@@ -89,10 +90,12 @@ def skull_strip(id, gopath, outpath, makefile, logpath="./"):
         mk.write("%s_skull_strip:\n" % id)
         for i in nii_list:
             fname = re.findall(file_name_pattern, i)
-            mk.write("\tfsl5.0-bet %s %s\n" % (i, os.path.join(outpath, "%s.nii" % fname[0]))) # -B or -f
+            mk.write("\tfsl5.0-bet %s %s\n" % (i, os.path.join(outpath, "%s.nii" % fname[0]))) # other parameters?
     print ("use \"make %s_skull_strip >> %s\" to strip skull" % (id, os.path.join(logpath, "%s_skull_strip.log" % id)))
     return
 
+
+# apply linear affine transformation
 def apply_flirt(id, gopath, outpath, matrixpath, makefile, logpath="./"):
     ref_file = "/home/ubuntu/admri_code/code/utils/MNI152_T1_2mm_brain.nii.gz"
     nii_list = get_nii(gopath)
@@ -105,6 +108,7 @@ def apply_flirt(id, gopath, outpath, matrixpath, makefile, logpath="./"):
     print ("use \"make %s_apply_flirt >> %s\" to apply flirt" % (id, os.path.join(logpath, "%s_apply_flirt.log" % id)))
     return
 
+# apply non-linear affine transformation
 def apply_fnirt(id, gopath, outpath, matrixpath, makefile, logpath="./"):
     ref_file = "/usr/local/fsl/data/standard/MNI152_T1_2mm_brain"
     ref_mask_file = "MNI152_T1_2mm_brain_mask_dil1"
@@ -119,6 +123,7 @@ def apply_fnirt(id, gopath, outpath, matrixpath, makefile, logpath="./"):
     print ("use \"make %s_apply_fnirt >> %s\" to apply fnirt" % (id, os.path.join(logpath, "%s_apply_fnirt.log" % id)))
     return
 
+# visualize without randomization
 def fix_visualization(fig_num, file_dict, filename):
     group_num = len(file_dict)
     f, ax = plt.subplots(group_num, fig_num, sharex=True, sharey=True)
@@ -129,7 +134,6 @@ def fix_visualization(fig_num, file_dict, filename):
         sorted_file_list = sorted(file_list)
         fig_indx = 0
         pick = sorted_file_list[:fig_num]
-        #target_files = [file_list[each] for each in pick]
         for each_nii in pick:
             nii_file = nib.load(each_nii)
             nii_data = nii_file.get_data()
@@ -141,9 +145,3 @@ def fix_visualization(fig_num, file_dict, filename):
     plt.savefig("%s.png" % filename)
     return
 
-# i, ref_file, os.path.join(outpath, "%s.nii" % fname[0]),conf_file, os.path.join(matrixpath, "%s.mat" % fname[0] ,ref_mask_file
-#
-#
-# /usr/local/fsl/bin/fnirt --in=T1_biascorr --ref=/usr/local/fsl/data/standard/MNI152_T1_2mm --fout=T1_to_MNI_nonlin_field --jout=T1_to_MNI_nonlin_jac --iout=T1_to_MNI_nonlin --logout=T1_to_MNI_nonlin.txt --cout=T1_to_MNI_nonlin_coeff --config=/usr/local/fsl/etc/flirtsch/T1_2_MNI152_2mm.cnf --aff=T1_to_MNI_lin.mat --refmask=MNI152_T1_2mm_brain_mask_dil1
-
-# flirt -interp spline -dof 12 -in T1_biascorr -ref /usr/local/fsl/data/standard/MNI152_T1_2mm -dof 12 -omat T1_to_MNI_lin.mat -out T1_to_MNI_lin

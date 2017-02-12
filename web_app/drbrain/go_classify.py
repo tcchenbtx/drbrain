@@ -19,6 +19,7 @@ app.config['MODLE_FOLDER'] = os.path.join(app.config['STATIC_FOLDER'], "models")
 model_body = os.path.join(app.config['MODLE_FOLDER'], "rotate_model_8082.h5")
 model = load_model(model_body)
 
+# function to normalize the data
 def normalization_data (array_1d):
     out_mean = np.mean(array_1d)
     out_std = np.std(array_1d)
@@ -28,7 +29,7 @@ def normalization_data (array_1d):
 
     return output
 
-
+# function to run disease classification
 def go_predict(input_img):
     print(input_img.shape)
     print("Prediction analysis")

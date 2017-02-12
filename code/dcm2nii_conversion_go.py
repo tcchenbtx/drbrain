@@ -10,17 +10,14 @@ log_path = os.path.join(code_path, "log")
 
 # path to process dcm files
 AD_raw_data_path = os.path.join(raw_data_path, "AD")
-MCI_raw_data_path = os.path.join(raw_data_path, "MCI")
 Normal_raw_data_path = os.path.join(raw_data_path, "Normal")
 PD_raw_data_path = os.path.join(raw_data_path, "PD")
 
-
+# path to makefile
 make_file_path = os.path.join(code_path, "Makefile")
 
-
-# get first ~180 nii data
+# go!
 process_dcm.batch_dcm2nii("AD1", AD_raw_data_path, make_file_path, log_path)
-process_dcm.batch_dcm2nii("MCI1", MCI_raw_data_path, make_file_path, log_path)
 process_dcm.batch_dcm2nii("Normal1", Normal_raw_data_path, make_file_path, log_path)
-#process_dcm.batch_dcm2nii("PD1", PD_raw_data_path, make_file_path, log_path)
+process_dcm.batch_dcm2nii("PD1", PD_raw_data_path, make_file_path, log_path)
 

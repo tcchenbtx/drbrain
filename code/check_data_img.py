@@ -18,5 +18,6 @@ total_tf_matrix_path = os.path.join(preprocess_data_path, "total_tf_matrix.h5")
 unique_matrix_path = os.path.join(preprocess_data_path, "unique_matrix.h5")
 unique_tf_matrix_path = os.path.join(preprocess_data_path, "unique_tf_matrix.h5")
 
+# globally check data in the file
 img_check.view_data(unique_tf_matrix_path, 5, "test")
 

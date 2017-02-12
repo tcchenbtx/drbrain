@@ -18,13 +18,11 @@ app.config['OUTPUT_FOLDER'] = os.path.join(app.config['STATIC_FOLDER'], "output"
 app.config['EXAMPLE_FOLDER'] = os.path.join(app.config['STATIC_FOLDER'], "example")
 app.config['MODLE_FOLDER'] = os.path.join(app.config['STATIC_FOLDER'], "models")
 
-#brain anomaly model
-brain_anomaly_pickle_2d = os.path.join(app.config['MODLE_FOLDER'], "brain_anomaly_2d.pkl")
+#brain anomaly model load
 brain_anomaly_pickle = os.path.join(app.config['MODLE_FOLDER'], "brain_anomaly.pkl")
-
-clf = joblib.load(brain_anomaly_pickle_2d)
 brain_anomaly_1 = joblib.load(brain_anomaly_pickle)
 
+# function for image normalization
 def normalization_data (array_1d):
     out_mean = np.mean(array_1d)
     out_std = np.std(array_1d)
@@ -34,8 +32,7 @@ def normalization_data (array_1d):
 
     return output
 
-
-
+# function to run brain anomaly check
 def run_brain_anomaly(beauty_nii_array):
     # open file
     print(beauty_nii_array.shape)
@@ -50,19 +47,4 @@ def run_brain_anomaly(beauty_nii_array):
     anomaly_outcome = brain_anomaly_1.predict(nii_flat_normal_smooth)
     return anomaly_outcome
 
-def run_brain_anomaly_2d(beauty_nii_array):
-    # open file
-    print(beauty_nii_array.shape)
-    npad = ((3, 2), (3, 0), (3, 2))
-    nii_data_pad = np.pad(beauty_nii_array, pad_width=npad, mode='constant', constant_values=0)
-    nii_flat = np.ravel(nii_data_pad)
-    nii_flat_normal = normalization_data(nii_flat)
-    nii_flat_normal_smooth = snd.gaussian_filter(nii_flat_normal, 1)
-    nii_flat_normal_smooth = nii_flat_normal_smooth.astype('float32')
-    print(nii_flat_normal_smooth.shape)
-    the_3d = nii_flat_normal_smooth.reshape((96,112,96))
-    go_input = np.ravel(the_3d[:,:,48])
-
-    anomaly_outcome = clf.predict(go_input)
-    return anomaly_outcome
 
