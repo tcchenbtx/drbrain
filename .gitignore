@@ -5,4 +5,6 @@ drbrain/preprocess_data/*
 web_app/drbrain/static/models/*
 web_app/drbrain/uploads/*
 
+# ignore pycharm
+.idea/*
 
