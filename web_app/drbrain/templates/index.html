@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dr. Brain</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="/static/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/static/css/creative.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Dr. Brain</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#tryit">Try it</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#result">Result</a>
+                    </li>
+                    <!--<li>-->
+                        <!--<a class="page-scroll" href="#portfolio">Portfolio</a>-->
+                    <!--</li>-->
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/learn_more">Learn More</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">Your Assistant for</h1>
+                <h1 id="homeHeading">brain 3D MRI image analysis</h1>
+                <hr>
+                <p style="font-weight: 900;">Dr. Brain can help you to analyze T1 brain structural MRI data to investigate if a patient has Alzheimer's Disease or Parkinson's disease</p>
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">About</a>
+            </div>
+        </div>
+    </header>
+
+
+
+    <section id="about">
+        <div class="container">
+            <div class="text-center text-align:center">
+                <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">What Dr. Brain can do for you</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+                <br>
+                <img src="static/img/usecase.png" width=80% height=50%>
+                <br>
+                <br>
+                <a href="#tryit" class="btn btn-primary btn-xl page-scroll">Try it !</a>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <section class="bg-primary" id="tryit">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center text-align:center">
+                    <h2 class="section-heading">Please select a file or upload yours</h2>
+                    <hr class="light">
+
+                    <p class="text-faded">After submission, Dr. Brain will process the input with following steps <br><br> Data clean up<br>Validate the input image<br>Classify the input image and show you the analysis result<br><br>The entire process can take up to 2 minutes, Please be patient </p>
+
+
+                    <div class="text-center">
+                    <form action = "/goanalysis" method = "POST" enctype = "multipart/form-data">
+                        <div class="selection_box">
+                            <select name="Go_select" id="mySelect" onchange="myFunction()" style="color: black">
+                                <option value="ad">Alzheimer's Disease Demo example</option>
+                                <option value="pd">Parkinson's Disease Demo example</option>
+                                <option value="normal">Healthy Brain Demo example</option>
+                                <option value="user_choose">Your own input</option>
+                            </select>
+                        </div>
+                        
+
+                        <br>
+                        <p id="demo"></p>
+                        <input type = "file" class="text-center" name = "user_input" id="self_input" style="display:none; text-align:center; margin: 0 auto;"/>
+                        <br>
+                        <br>
+                        <script>
+                        function myFunction() {
+                        var x = document.getElementById("mySelect");
+                        var i = x.options[x.selectedIndex].value;
+                        if (i == "user_choose"){
+                            document.getElementById("demo").innerHTML = "Dr. Brain now only support sMRI in <u>Nifti format</u><br> please choose a file with <u>.nii</u> or <u>.nii.gz</u> extention";
+                            document.getElementById("self_input").style.display = 'block';}
+                        else{
+                            document.getElementById("demo").innerHTML = "";
+                            document.getElementById("self_input").style.display = 'none';
+                        }
+                        }
+                        </script>
+
+                        <input type = "submit" class="page-scroll btn btn-default btn-xl sr-button" onclick="move()"/>
+                        <br>
+                        <br>
+
+
+                    </form>
+                    </div>
+
+
+                    <style>
+                    #myProgress {
+                      position: relative;
+                      width: 100%;
+                      height: 30px;
+                      background-color: #ddd;
+                    }
+
+                    #myBar {
+                      position: absolute;
+                      width: 0%;
+                      height: 100%;
+                      background-color: #4CAF50;
+                    }
+
+                    #label {
+                      text-align: center;
+                      line-height: 30px;
+                      color: white;
+                    }
+                    </style>
+
+
+                    <div id="myProgress">
+                        <div id="myBar">
+                        <div id="label">0%</div>
+                        </div>
+                        </div>
+
+                    <br>
+
+                    <script>
+                    function move() {
+                      var elem = document.getElementById("myBar");
+                      var width = 0;
+                      var id = setInterval(frame, 700);
+                      function frame() {
+                        if (width >= 100) {
+                          clearInterval(id);
+                        } else {
+                          width++;
+                          elem.style.width = width + '%';
+                          document.getElementById("label").innerHTML = width * 1  + '%';
+                          }
+                      }
+
+                    }
+                    </script>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+    <section id="result">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Analysis Result</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+
+    <div id="if_user_input" style="display:none">
+        <div class="col-lg-8 col-lg-offset-2 text-center">
+            <div id="img_output_info">
+
+        {% if section %}
+        <script>
+        document.getElementById("if_user_input").style.display = 'block';
+        document.getElementById("if_not_user_input").style.display = 'none';
+        </script>
+        {% endif %}
+
+        {% if section %}
+        <script>
+        document.location.hash = '#' + '{{ section }}';
+        </script>
+        {% endif %}
+
+
+                <div id="valid_input" style="display:none">
+                    <br>
+                    <p>Your input:</p>
+                    <img src='static/output/{{outfilename}}_structure_1.png' width="380" height="120" vspace=1%>
+                        <br>
+                    <p>After image processing:</p>
+                    <img src='static/output/{{outfilename}}_structure_2.png' width="380" height="120" vspace=1%>
+
+
+                    <p> Within the following three categories:</p>
+                    <p> Normal healthy brain (Normal)</p>
+                    <p> Alzheimer's Disease(AD)</p>
+                    <p> Parkinson's disease (PD)<br></p>
+                    <p> Your input image will most likely be classified as <b>{{output_class}}</b><br></p>
+                    <p> Probability chart:</p>
+
+                    <img src="static/output_prob/{{prob_fig}}" width="400" height="300">
+                    <!--<img src='static/output/{{prob_fig}}'>-->
+                </div>
+
+                <div id="invalid_input" style="display:none">
+                    <p> Your input is NOT a valid data for our analysis </p>
+                    <p> Please upload another file or use our demo examples </p>
+                    <a href="/#tryit" class="btn btn-primary btn-xl page-scroll">Retry</a>
+                </div>
+
+
+
+        {% if outlier|string() == "Bad" %}
+        <script>
+            document.getElementById("invalid_input").style.display = 'block';
+        </script>
+        {% else %}
+        <script>
+            document.getElementById("valid_input").style.display = 'block';
+        </script>
+        {% endif %}
+
+                </div>
+            </div>
+    </div>
+
+</div>
+
+
+<div id="if_not_user_input" style="display:block">
+        <div class="col-lg-8 col-lg-offset-2 text-center">
+            <div id="img_output">
+
+    <p>Go <a class="page-scroll" href="#tryit">here</a> to select an input for analysis<br></p>
+
+            </div>
+    </div>
+
+</div>
+
+{% if section %}
+        <script>
+        document.getElementById("if_not_user_input").style.display = 'none';
+        </script>
+{% endif %}
+
+
+
+        </div>
+    </section>
+
+
+
+
+
+    <section class="bg-dark" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Let's Get In Touch!</h2>
+                    <hr class="primary">
+                    <p>Want to learn more? Please feel free to contact me</p>
+                    <p><a href="mailto:tcchenbtx@gmail.com">tcchenbtx@gmail.com</a>
+                </div>
+
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                 
+
+                <br>
+                <ul class="list-inline banner-social-buttons">
+                    <li>
+                        <a href="https://github.com/tcchenbtx" class="btn2 btn-default2 btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/tcchenbtx" class="btn2 btn-default2 btn-lg"><span class="network-name">LinkedIn</span></a>
+                    </li>
+                </ul>
+            </div>
+
+
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/creative.min.js"></script>
+
+</body>
+
+</html>
